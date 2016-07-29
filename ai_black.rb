@@ -17,6 +17,60 @@ class MyAlggago
     x_length = MAX_NUMBER
     y_length = MAX_NUMBER
 
+
+    ##
+    #gather_stone = 0
+    #current_you = your_position[1]
+    ##
+
+    gather_stone = Array.new
+
+    your1_index = 0
+    your2_index = 0
+
+    your_position.each do |your1|
+      your_position.each do |your2|
+
+        if your1_index != your2_index
+          current_item = your1
+          next_item = your2
+
+          x_distance = (current_item[0] - next_item[0]).abs
+          y_distance = (current_item[1] - next_item[1]).abs
+
+          temp_distance = Math.sqrt(x_distance * x_distance + y_distance * y_distance)
+
+          if temp_distance < 0.00001
+            gather_stone.push(your1_index)
+            gather_stone.push(your2_index)
+          end
+        end
+
+        if your2_index == 6
+          your2_index = 0
+        else
+          your2_index = your2_index + 1
+        end
+
+      end
+
+      gather_stone = gather_stone.uniq
+      your1_index = your1_index + 1
+
+      break gather_stone.count if gather_stone.count > 3
+    end
+
+
+
+
+
+
+
+
+
+
+
+
     my_position.each do |my|
       your_position.each do |your|
 
@@ -30,30 +84,32 @@ class MyAlggago
           min_length = current_distance
 
           if your[0] > 350
+            x_length = your[0]-10 - my[0]
+
             if your[1] > 350
-              x_length = your[0]-10 - my[0]
               y_length = your[1]-10 - my[1]
             else
-              x_length = your[0]-10 - my[0]
               y_length = your[1]+10 - my[1]
             end
+
           else
+            x_length = your[0]+10 - my[0]
+
             if your[1] > 350
-              x_length = your[0]+10 - my[0]
               y_length = your[1]-10 - my[1]
             else
-              min_length = current_distance
-              x_length = your[0]+10 - my[0]
               y_length = your[1]+10 - my[1]
             end
+
           end
+
         end
       end
       index = index + 1
     end
 
     #Return values
-    message = positions.size #돌의 갯수
+    message = gather_stone #positions.size #메시지 - 디버깅용 메시지입니다용
     stone_number = current_stone_number #움직일 돌
     stone_x_strength = x_length * 5
     stone_y_strength = y_length * 5
